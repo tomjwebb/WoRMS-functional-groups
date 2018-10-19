@@ -1,5 +1,5 @@
 # WoRMS-functional-groups
-Use the worrms package to access and format functional group data for marine species
+Use the `worrms` package to access and format functional group data for marine species
 
 The function `get_worms_fgrp` is designed to access the attributes data stored in the World Register of Marine Species ([WoRMS](https://marinespecies.org)) to get broad functional group information for a marine species identified by its WoRMS Aphia ID. It depends on the [`worrms`](https://github.com/ropensci/worrms) package to access the WoRMS API. You will need to install and load `worrms` before running the functional group function:
 More stable CRAN version
