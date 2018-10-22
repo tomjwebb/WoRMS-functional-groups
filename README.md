@@ -24,7 +24,7 @@ To run for a single species, just use a valid Aphia ID. If you just have a speci
 wm_name2id("Mytilus edulis")
 #> [1] 140480
 ```
-Then run the `get_worms_fgrp` function:
+Then run the [`get_worms_fgrp`](https://github.com/tomjwebb/WoRMS-functional-groups/blob/master/R/get_functional_group.r) function:
 , e.g.
 ```R
 get_worms_fgrp(AphiaID = 100803)
