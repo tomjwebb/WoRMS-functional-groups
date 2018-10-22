@@ -1,17 +1,22 @@
 # WoRMS-functional-groups
 Use the `worrms` package to access and format functional group data for marine species
 
-The function `get_worms_fgrp` is designed to access the attributes data stored in the World Register of Marine Species ([WoRMS](https://marinespecies.org)) to get broad functional group information for a marine species identified by its WoRMS Aphia ID. It depends on the [`worrms`](https://github.com/ropensci/worrms) package to access the WoRMS API. You will need to install and load `worrms` before running the functional group function. More stable CRAN version
+The function `get_worms_fgrp` is designed to access the attributes data stored in the World Register of Marine Species ([WoRMS](https://marinespecies.org)) to get broad functional group information for a marine species identified by its WoRMS Aphia ID. It depends on the [`worrms`](https://github.com/ropensci/worrms) package to access the WoRMS API. You will need to install and load `worrms` before running the functional group function:
 ```R
+# More stable CRAN version
 install.packages("worrms")
 ```
-Development version
 ```R
+# Development version
 devtools::install_github("ropensci/worrms")
+```
+```R
 library("worrms")
 ```
-You will also need to load the `tidyverse` packages:
+You will also need to load the [`tidyverse`](https://tidyverse.tidyverse.org) suite of packages:
 ```R
+# Install from CRAN
+install.packages("tidyverse")
 library(tidyverse)
 ```
 To run for a single species, just use a valid Aphia ID. If you just have a species name, you can get its Aphia ID using the `worrms::wm_name2id` function, e.g. for the common mussel, *Mytilus edulis*:
