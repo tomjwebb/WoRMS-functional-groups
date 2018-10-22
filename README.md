@@ -65,4 +65,4 @@ spp_attr
 #> 6  463089 benthos     <NA>       
 #> 7  584932 zooplankton zooplankton
 ```
-At present, the functional groups returned are those stored as 'functional group' in WoRMS attributes (e.g. benthos, zooplankton, phytoplankton - for details see http://www.marinespecies.org/traits/ - as well as certain paraphyletic groups (fish, macroalgae) and taxonomic groups (birds, mammals, reptiles).
+At present, the functional groups returned are those stored as 'functional group' in WoRMS attributes (e.g. benthos, zooplankton, phytoplankton - for details see http://www.marinespecies.org/traits/) - as well as certain paraphyletic groups (fish - everything in WoRMS [superclass Pisces](http://www.marinespecies.org/aphia.php?p=taxdetails&id=11676), macroalgae) and taxonomic groups (birds, mammals, reptiles).
