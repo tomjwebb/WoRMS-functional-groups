@@ -51,14 +51,17 @@ get_worms_fgrp <- function(AphiaID){
     }
   } else {
     #' check taxonomy for other groups
-    taxo_dat <- wm_classification(AphiaID)
-    fg <- case_when(
-      "Aves" %in% taxo_dat$scientificname ~ "birds",
-      "Mammalia" %in% taxo_dat$scientificname ~ "mammals",
-      "Reptilia" %in% taxo_dat$scientificname ~ "reptiles",
-      TRUE ~ as.character(NA)
-      )
-      
+    taxo_dat <- try(wm_classification(AphiaID), silent = TRUE)
+    if(identical(class(taxo_dat), "try-error")){
+      fg <- as.character(NA)
+    } else {
+      fg <- case_when(
+        "Aves" %in% taxo_dat$scientificname ~ "birds",
+        "Mammalia" %in% taxo_dat$scientificname ~ "mammals",
+        "Reptilia" %in% taxo_dat$scientificname ~ "reptiles",
+        TRUE ~ as.character(NA)
+        )
+    }
     out <- tibble(AphiaID = AphiaID, stage = "adult", fun_grp = fg)
   }
     
