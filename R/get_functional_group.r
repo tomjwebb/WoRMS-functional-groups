@@ -64,7 +64,10 @@ get_worms_fgrp <- function(AphiaID){
     }
     out <- tibble(AphiaID = AphiaID, stage = "adult", fun_grp = fg)
   }
-    
+  
+  #' what if there are duplicate rows?
+  out <- out[!duplicated(out), ]
+  
   #' output the fg data
   out
   
