@@ -13,13 +13,22 @@ get_worms_fgrp <- function(AphiaID){
       
       #' Insert if statement here about $children empty
       #' assign the $children - so that it can be used 
-      children <- data.frame(fg_dat$children)
+      children <- fg_dat$children
       
-      if(length(children) > 0 ){
+      if(max(lengths(children)) > 0 ){
         #' Extract the life stage information from the $children field
-        life_stage <- bind_rows(fg_dat$children) %>%
+        life_stage <- children %>% bind_rows() %>%
           dplyr::select(measurementValue) %>%
-          rename(stage = measurementValue) %>% bind_cols(., fg_dat)
+          rename(stage = measurementValue)
+        #' add in rows for instances missing children
+        idx <- which(lengths(children) == 0)
+        if(length(idx) > 0){
+          life_stage_null <- tibble(stage = rep(as.character(NA), length(children)))
+          idy <- (1:length(children))[-idx]
+          life_stage_null[idy,] <- life_stage
+          life_stage <- life_stage_null
+        }
+        life_stage <- life_stage %>% bind_cols(., fg_dat)
         
        #' create the output to return
        out <- tibble(AphiaID = as.numeric(life_stage$AphiaID),
