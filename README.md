@@ -41,14 +41,7 @@ Then to run the function for each species, and to tidy the results so that each 
 ```R
 spp_attr <- species %>%
   group_by(AphiaID) %>%
-  do(get_worms_fgrp(AphiaID = .$AphiaID)) %>%
-    mutate(functional_group = case_when(
-      str_detect(fun_grp, ">") ~ tolower(word(fun_grp, -1)),
-      fun_grp == "Pisces" ~ "fish",
-      TRUE ~ tolower(fun_grp)
-  )) %>%
-  dplyr::select(-fun_grp) %>%
-  spread(stage, functional_group)
+  do(get_worms_fgrp(AphiaID = .$AphiaID))
 ```
 This produces the following output:
 ```R
