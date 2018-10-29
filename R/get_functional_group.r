@@ -77,6 +77,16 @@ get_worms_fgrp <- function(AphiaID){
   #' what if there are duplicate rows?
   out <- out[!duplicated(out), ]
   
+  #' do some tidying of the output: tidy up functional_group text
+  #' and spread to give one column per life stage
+  out <- out %>% mutate(functional_group = case_when(
+    str_detect(fun_grp, ">") ~ tolower(word(fun_grp, -1)),
+    fun_grp == "Pisces" ~ "fish",
+    TRUE ~ tolower(fun_grp)
+  )) %>%
+  dplyr::select(-fun_grp) %>%
+  spread(stage, functional_group)
+ 
   #' output the fg data
   out
   
