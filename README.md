@@ -60,3 +60,12 @@ spp_attr
 #> 8  584932 zooplankton zooplankton
 ```
 At present, the functional groups returned are those stored as 'functional group' in WoRMS attributes (e.g. benthos, zooplankton, phytoplankton - for details see http://www.marinespecies.org/traits/) - as well as certain paraphyletic groups (fish - everything in WoRMS [superclass Pisces](http://www.marinespecies.org/aphia.php?p=taxdetails&id=11676), macroalgae) and taxonomic groups (birds, mammals, reptiles).
+
+UPDATE: it's considerably quicker to use `dplyr::group_map` than `dplyr::do` to run over multiple species. Use `purrrogress::with_progress` to add a progress bar too, resulting in (for the example above):
+```R
+spp_attr <- species %>%
+  mutate(aphia = AphiaID) %>% 
+  group_by(AphiaID) %>% 
+  group_map(purrrogress::with_progress(~ get_worms_fgrp(AphiaID = .x$aphia))) %>% 
+  bind_rows()
+```
