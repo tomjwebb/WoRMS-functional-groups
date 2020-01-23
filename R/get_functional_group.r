@@ -30,6 +30,16 @@ get_worms_fgrp <- function(AphiaID){
         }
         life_stage <- life_stage %>% bind_cols(., fg_dat)
         
+        #' deal with cases where multiple records are returned for the same life stage:
+        #' add a suffix to subsequent identical stages (adult_2, etc.)        
+        life_stage <- life_stage %>% group_by(stage) %>% mutate(nth_stage_val = 1:n()) %>% 
+          ungroup() %>% 
+          mutate(stage = case_when(
+            nth_stage_val == 1 ~ stage,
+            TRUE ~ paste(stage, nth_stage_val, sep = "_")
+          )
+          )
+        
        #' create the output to return
        out <- tibble(AphiaID = as.numeric(life_stage$AphiaID),
          stage = life_stage$stage, fun_grp = life_stage$measurementValue)
