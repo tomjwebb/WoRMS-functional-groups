@@ -6,6 +6,9 @@ get_worms_fgrp <- function(AphiaID){
   attr_dat <- try(wm_attr_data(
     AphiaID, include_inherited = TRUE), silent = TRUE)
   
+  #' set up out as null for later use
+  out <- NULL
+  
   if(!identical(class(attr_dat), "try-error")){
     #' if attribute data exists, test if functional group is there
     if("Functional group" %in% attr_dat$measurementType){
@@ -48,41 +51,46 @@ get_worms_fgrp <- function(AphiaID){
         #' If no life stage info, assume stage is adult
         out <- tibble(AphiaID = as.numeric(fg_dat$AphiaID),
           stage = "adult", fun_grp = fg_dat$measurementValue)
+       #' Deal with cases where multiple records are returned (i.e. 2 or more adult fun_grps)
+        if(nrow(out) > 1){
+          out <- out %>% group_by(stage) %>% mutate(nth_stage_val = 1:n()) %>% 
+            ungroup() %>% 
+            mutate(stage = case_when(
+              nth_stage_val == 1 ~ stage,
+              TRUE ~ paste(stage, nth_stage_val, sep = "_")
+              )
+              )
+        } 
+      } 
+    }
+    
+   #' add Pisces, from paraphyletic group: this takes priority over the above
+    #' (e.g. class something as Pisces if it is a fish even if it is also listed as benthos)
+    if ("Paraphyletic group" %in% attr_dat$measurementType) {
+      if(first(
+        attr_dat$measurementValue[attr_dat$measurementType == "Paraphyletic group"] == "Pisces")){
+        out <- tibble(AphiaID = AphiaID, stage = "adult",
+                      fun_grp = first(attr_dat$measurementValue[
+                        attr_dat$measurementType == "Paraphyletic group"]))
+        }
       }
-      
-    } else if ("Paraphyletic group" %in% attr_dat$measurementType) {
-    #' get paraphyletic group info if available  
-      out <- tibble(AphiaID = AphiaID, stage = "adult",
-        fun_grp = first(attr_dat$measurementValue[
-          attr_dat$measurementType == "Paraphyletic group"])
-          )
-      
-    } else {
-      #' check taxonomy for other groups
-      taxo_dat <- wm_classification(AphiaID)
-      fg <- case_when(
-        "Aves" %in% taxo_dat$scientificname ~ "birds",
-        "Mammalia" %in% taxo_dat$scientificname ~ "mammals",
-        "Reptilia" %in% taxo_dat$scientificname ~ "reptiles",
-        TRUE ~ as.character(NA)
-      )
+    }
+  
+#' check taxonomy for other groups
+    if(is.null(out)){
+      taxo_dat <- try(wm_classification(AphiaID), silent = TRUE)
+      if(identical(class(taxo_dat), "try-error")){
+        fg <- as.character(NA)
+      } else {
+        fg <- case_when(
+          "Aves" %in% taxo_dat$scientificname ~ "birds",
+          "Mammalia" %in% taxo_dat$scientificname ~ "mammals",
+          "Reptilia" %in% taxo_dat$scientificname ~ "reptiles",
+          TRUE ~ as.character(NA)
+        )
+      }
       out <- tibble(AphiaID = AphiaID, stage = "adult", fun_grp = fg)
     }
-  } else {
-    #' check taxonomy for other groups
-    taxo_dat <- try(wm_classification(AphiaID), silent = TRUE)
-    if(identical(class(taxo_dat), "try-error")){
-      fg <- as.character(NA)
-    } else {
-      fg <- case_when(
-        "Aves" %in% taxo_dat$scientificname ~ "birds",
-        "Mammalia" %in% taxo_dat$scientificname ~ "mammals",
-        "Reptilia" %in% taxo_dat$scientificname ~ "reptiles",
-        TRUE ~ as.character(NA)
-        )
-    }
-    out <- tibble(AphiaID = AphiaID, stage = "adult", fun_grp = fg)
-  }
   
   #' what if there are duplicate rows?
   out <- out[!duplicated(out), ]
