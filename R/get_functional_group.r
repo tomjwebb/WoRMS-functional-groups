@@ -41,7 +41,8 @@ get_worms_fgrp <- function(AphiaID){
             nth_stage_val == 1 ~ stage,
             TRUE ~ paste(stage, nth_stage_val, sep = "_")
           )
-          )
+          ) %>% 
+          select(-nth_stage_val)
         
        #' create the output to return
        out <- tibble(AphiaID = as.numeric(life_stage$AphiaID),
@@ -59,7 +60,8 @@ get_worms_fgrp <- function(AphiaID){
               nth_stage_val == 1 ~ stage,
               TRUE ~ paste(stage, nth_stage_val, sep = "_")
               )
-              )
+              ) %>% 
+          select(-nth_stage_val)
         } 
       } 
     }
