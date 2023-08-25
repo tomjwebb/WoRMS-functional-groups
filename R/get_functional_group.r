@@ -77,6 +77,14 @@ get_worms_fgrp <- function(AphiaID){
         }
       }
     }
+  #' add other paraphyletic groups: Algae, Algae > Macroalgae, Mangroves this DOES NOT takes priority over the above; i.e. only use if a functional group (e.g. phytoplankton) is not available
+  if(is.null(out)){
+    if ("Paraphyletic group" %in% attr_dat$measurementType) {
+      out <- tibble(AphiaID = AphiaID, stage = "adult",
+                    fun_grp = first(attr_dat$measurementValue[
+                      attr_dat$measurementType == "Paraphyletic group"]))
+    }
+  }
   
 #' check taxonomy for other groups
     if(is.null(out)){
@@ -102,6 +110,7 @@ get_worms_fgrp <- function(AphiaID){
   out <- out %>% mutate(functional_group = case_when(
     str_detect(fun_grp, ">") ~ tolower(word(fun_grp, -1)),
     fun_grp == "Pisces" ~ "fish",
+    fun_grp == "Algae > Macroalgae" ~ "macroalgae",
     TRUE ~ tolower(fun_grp)
   )) %>%
   dplyr::select(-fun_grp) %>%
