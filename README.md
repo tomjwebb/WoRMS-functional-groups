@@ -1,4 +1,6 @@
 # WoRMS-functional-groups
+**Please note** Various package updates mean that this function no longer works. I will try to fix it when I get chance, but am leaving it here as the code contains some useful pointers for how to interact with WoRMS attributes data (including, but not limited to, functional groups) via the `worrms` package. In the meantime, you can access traits data from WoRMS via the Lifewatch shiny app here: https://rshiny.vsc.lifewatch.be/traits-data/
+
 Use the `worrms` package to access and format functional group data for marine species. This work has been supported by the UK [Marine Ecosystems Research Programme](https://github.com/tomjwebb/WoRMS-functional-groups) and by [EMODnet](http://www.emodnet.eu/).
 
 The function `get_worms_fgrp` is designed to access the attributes data stored in the World Register of Marine Species ([WoRMS](https://marinespecies.org)) to get broad functional group information for a marine species identified by its WoRMS Aphia ID. It depends on the [`worrms`](https://github.com/ropensci/worrms) package to access the WoRMS API. You will need to install and load `worrms` before running the functional group function:
